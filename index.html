@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>SINS — Анкета</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #171717;
+    --surface: #222222;
+    --border: #4D4D4D;
+    --accent: #F25623;
+    --gold: #F25623;
+    --text: #DEDEDE;
+    --muted: #4D4D4D;
+    --card: #1f1f1f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(242,86,35,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(242,86,35,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 0 48px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    padding: 52px 24px 36px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .header::after {
+    content: '✦';
+    position: absolute;
+    bottom: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg);
+    padding: 0 14px;
+    color: var(--gold);
+    font-size: 18px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 18vw, 80px);
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .tagline {
+    margin-top: 10px;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── SECTIONS ── */
+  .section { padding: 36px 20px 0; }
+  .section-label { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .input-row.single { grid-template-columns: 1fr; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  .field input, .field select {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; padding: 12px 14px; border-radius: 2px;
+    outline: none; transition: border-color 0.2s; -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--accent); }
+  .field input::placeholder { color: var(--muted); }
+  .field select option { background: #1f1f1f; }
+
+  /* ── DRAG LIST ── */
+  .ranking-section { padding: 36px 20px 0; }
+  .ranking-title { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .ranking-hint { font-size: 13px; font-style: italic; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+  .sin-list { display: flex; flex-direction: column; gap: 8px; list-style: none; }
+  .sin-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 2px;
+    display: flex; align-items: center; gap: 14px; padding: 13px 16px;
+    cursor: grab; touch-action: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.12s;
+    user-select: none;
+  }
+  .sin-item:active { cursor: grabbing; }
+  .sin-item.dragging { opacity: 0.35; border-color: var(--accent); }
+  .sin-item.drag-over { border-color: var(--gold); background: #262626; transform: scale(1.012); }
+  .sin-rank { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--accent); min-width: 26px; text-align: center; line-height: 1; }
+  .sin-emoji { font-size: 26px; line-height: 1; }
+  .sin-info { flex: 1; }
+  .sin-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: 0.02em; }
+  .sin-desc { font-size: 12px; font-style: italic; color: var(--muted); margin-top: 2px; }
+  .drag-handle { color: #555555; font-size: 20px; padding: 0 2px; }
+
+  /* ── SLIDERS ── */
+  .intensity-section { padding: 28px 20px 0; }
+  .intensity-label { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .intensity-sub { font-size: 13px; font-style: italic; color: var(--muted); margin-bottom: 18px; }
+  .slider-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .slider-sin-name { font-size: 13px; min-width: 96px; color: var(--text); }
+  input[type=range] {
+    flex: 1; -webkit-appearance: none; appearance: none;
+    height: 3px; background: var(--border); border-radius: 2px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; border: 2px solid var(--bg);
+  }
+  .slider-val { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--accent); min-width: 22px; text-align: right; }
+
+  /* ── MOTTO ── */
+  .motto-section { padding: 28px 20px 0; }
+  .motto-label { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .motto-sub { font-size: 13px; font-style: italic; color: var(--muted); margin-bottom: 14px; }
+  textarea {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Cormorant Garamond', serif;
+    font-size: 16px; font-style: italic; padding: 14px; border-radius: 2px;
+    outline: none; resize: none; transition: border-color 0.2s; line-height: 1.5;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--muted); }
+
+  /* ── SAVE AREA ── */
+  .save-section { padding: 36px 20px 0; }
+  .btn-save {
+    width: 100%; padding: 18px;
+    background: var(--accent); color: #fff;
+    font-family: 'Playfair Display', serif; font-size: 13px; letter-spacing: 0.2em;
+    text-transform: uppercase; border: none; border-radius: 2px; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-save:hover { background: #a8253b; }
+  .btn-save:active { transform: scale(0.98); }
+  .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .screenshot-hint {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .screenshot-hint a {
+    color: var(--gold);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .screenshot-hint a:hover { color: var(--text); }
+
+  /* ── SCREENSHOT OVERLAY ── */
+  #screenshot-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 900;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    backdrop-filter: blur(6px);
+  }
+  #screenshot-overlay.active { display: flex; }
+
+  .overlay-hint {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--gold);
+    margin-bottom: 18px;
+    text-align: center;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+  }
+
+  /* iPhone 17 screen: 393pt wide × 852pt tall.
+     2/3 height ≈ 568pt. We target ~320px wide card that fits on any phone. */
+  #screenshot-card {
+    width: min(320px, 90vw);
+    background: #171717;
+    border: 1px solid #4D4D4D;
+    border-radius: 6px;
+    padding: 26px 22px 22px;
+    position: relative;
+    overflow: hidden;
+    max-height: 75vh;
+    overflow-y: auto;
+  }
+  #screenshot-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 25% 15%, rgba(242,86,35,0.12) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .sc-logo { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: #F25623; letter-spacing: 0.22em; text-align: center; line-height: 1; }
+  .sc-tagline { text-align: center; font-size: 11px; font-style: italic; color: #888888; margin-top: 4px; letter-spacing: 0.05em; }
+  .sc-divider { height: 1px; background: #4D4D4D; margin: 14px 0; position: relative; }
+  .sc-divider::after { content: '✦'; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); background: #171717; padding: 0 8px; font-size: 10px; color: #F25623; }
+  .sc-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; text-align: center; color: #DEDEDE; line-height: 1.2; }
+  .sc-meta { text-align: center; font-size: 12px; font-style: italic; color: #888888; margin-top: 3px; margin-bottom: 14px; }
+  .sc-section-title { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: #F25623; margin-bottom: 10px; }
+  .sc-sin-row {
+    display: flex; align-items: center; gap: 9px;
+    margin-bottom: 7px; padding: 8px 10px;
+    background: #1f1f1f; border-left: 2px solid #4D4D4D;
+  }
+  .sc-sin-row.r1 { border-left-color: #F25623; }
+  .sc-sin-row.r2 { border-left-color: #c04018; }
+  .sc-sin-row.r3 { border-left-color: #8a2e10; }
+  .sc-rank { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: #F25623; min-width: 18px; }
+  .sc-emoji { font-size: 17px; line-height: 1; }
+  .sc-sname { font-family: 'Playfair Display', serif; font-size: 13px; color: #DEDEDE; flex: 1; }
+  .sc-bar-wrap { width: 40px; height: 3px; background: #4D4D4D; border-radius: 2px; flex-shrink: 0; }
+  .sc-bar { height: 100%; background: #F25623; border-radius: 2px; }
+  .sc-bar-num { font-size: 11px; color: #888888; min-width: 14px; text-align: right; }
+  .sc-motto { margin-top: 12px; padding: 10px 12px; border: 1px solid #4D4D4D; font-size: 12px; font-style: italic; color: #888888; text-align: center; line-height: 1.5; }
+  .sc-footer { margin-top: 14px; text-align: center; font-size: 9px; letter-spacing: 0.18em; color: #4D4D4D; text-transform: uppercase; }
+
+  .overlay-close {
+    margin-top: 18px;
+    background: none; border: 1px solid #4D4D4D; color: #888888;
+    font-family: 'Cormorant Garamond', serif; font-size: 13px;
+    letter-spacing: 0.1em; padding: 10px 32px; cursor: pointer;
+    border-radius: 2px; transition: border-color 0.2s, color 0.2s;
+  }
+  .overlay-close:hover { border-color: var(--muted); color: var(--text); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface); border: 1px solid var(--gold);
+    color: var(--gold); font-family: 'Cormorant Garamond', serif;
+    font-size: 14px; letter-spacing: 0.1em; padding: 12px 24px;
+    border-radius: 2px; transition: transform 0.3s ease;
+    z-index: 2000; white-space: nowrap; max-width: 90vw; text-align: center;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── ARCHETYPE ── */
+  .archetype-section { padding: 36px 20px 0; }
+  .arch-label { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+
+  .arch-card {
+    border: 1px solid var(--border);
+    background: var(--card);
+    padding: 28px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: archReveal 0.6s ease forwards;
+  }
+  .arch-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(242,86,35,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  @keyframes archReveal {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .arch-symbol {
+    font-size: 52px;
+    line-height: 1;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 0 16px rgba(242,86,35,0.5));
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { filter: drop-shadow(0 0 12px rgba(242,86,35,0.4)); }
+    50%       { filter: drop-shadow(0 0 24px rgba(242,86,35,0.8)); }
+  }
+
+  .arch-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .arch-desc {
+    font-size: 15px;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 16px;
+    opacity: 0.85;
+  }
+  .arch-attracts {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    margin-top: 4px;
+  }
+  .arch-attracts span { color: var(--accent); }
+
+  .btn-reveal {
+    width: 100%; padding: 18px;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Playfair Display', serif; font-size: 13px; letter-spacing: 0.2em;
+    text-transform: uppercase; border-radius: 2px; cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.1s;
+    margin-bottom: 12px;
+  }
+  .btn-reveal:hover { background: var(--accent); color: #fff; }
+  .btn-reveal:active { transform: scale(0.98); }
+
+  /* sc archetype */
+  .sc-arch {
+    margin-top: 12px;
+    padding: 12px;
+    background: #1f1f1f;
+    border-left: 3px solid #F25623;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sc-arch-sym { font-size: 22px; }
+  .sc-arch-info { flex: 1; }
+  .sc-arch-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #888; margin-bottom: 2px; }
+  .sc-arch-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: #F25623; }
+
+  @media (max-width: 360px) {
+    .logo { font-size: 48px; }
+    .sin-name { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header class="header">
+    <div class="logo">SINS</div>
+    <div class="tagline">Грешить веселее вместе</div>
+  </header>
+
+  <div class="section">
+    <div class="section-label">✦ Исповедь грешника</div>
+    <div class="input-row">
+      <div class="field">
+        <label>Имя</label>
+        <input type="text" id="inp-name" placeholder="Твоё имя" maxlength="20">
+      </div>
+      <div class="field">
+        <label>Возраст</label>
+        <input type="number" id="inp-age" placeholder="21" min="18" max="99">
+      </div>
+    </div>
+    <div class="input-row single">
+      <div class="field">
+        <label>Город</label>
+        <input type="text" id="inp-city" placeholder="Где обитаешь..." maxlength="30">
+      </div>
+    </div>
+    <div class="input-row single">
+      <div class="field">
+        <label>Ищу</label>
+        <select id="inp-seek">
+          <option value="">— выбери —</option>
+          <option>Сообщника</option>
+          <option>Искупление</option>
+          <option>Соучастника в преступлении</option>
+          <option>Противоположность себе</option>
+          <option>Такого же грешника</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="ranking-section">
+    <div class="ranking-title">✦ Твой смертный топ</div>
+    <div class="ranking-hint">Перетащи грехи в порядке от самого твоего — до наименее твоего</div>
+    <ul class="sin-list" id="sin-list">
+      <li class="sin-item" data-id="pride" draggable="true">
+        <span class="sin-rank">1</span><span class="sin-emoji">👑</span>
+        <div class="sin-info"><div class="sin-name">Гордыня</div><div class="sin-desc">Superbia · Я лучший</div></div>
+        <span class="drag-handle">⠿</span>
+      </li>
+      <li class="sin-item" data-id="greed" draggable="true">
+        <span class="sin-rank">2</span><span class="sin-emoji">💰</span>
+        <div class="sin-info"><div class="sin-name">Жадность</div><div class="sin-desc">Avaritia · Всё — моё</div></div>
+        <span class="drag-handle">⠿</span>
+      </li>
+      <li class="sin-item" data-id="lust" draggable="true">
+        <span class="sin-rank">3</span><span class="sin-emoji">🌹</span>
+        <div class="sin-info"><div class="sin-name">Похоть</div><div class="sin-desc">Luxuria · Желание без границ</div></div>
+        <span class="drag-handle">⠿</span>
+      </li>
+      <li class="sin-item" data-id="envy" draggable="true">
+        <span class="sin-rank">4</span><span class="sin-emoji">🐍</span>
+        <div class="sin-info"><div class="sin-name">Зависть</div><div class="sin-desc">Invidia · У соседа лучше</div></div>
+        <span class="drag-handle">⠿</span>
+      </li>
+      <li class="sin-item" data-id="gluttony" draggable="true">
+        <span class="sin-rank">5</span><span class="sin-emoji">🍷</span>
+        <div class="sin-info"><div class="sin-name">Чревоугодие</div><div class="sin-desc">Gula · Жизнь слишком коротка</div></div>
+        <span class="drag-handle">⠿</span>
+      </li>
+      <li class="sin-item" data-id="wrath" draggable="true">
+        <span class="sin-rank">6</span><span class="sin-emoji">🔥</span>
+        <div class="sin-info"><div class="sin-name">Гнев</div><div class="sin-desc">Ira · Ярость праведного</div></div>
+        <span class="drag-handle">⠿</span>
+      </li>
+      <li class="sin-item" data-id="sloth" draggable="true">
+        <span class="sin-rank">7</span><span class="sin-emoji">🌙</span>
+        <div class="sin-info"><div class="sin-name">Уныние</div><div class="sin-desc">Acedia · Лень как образ жизни</div></div>
+        <span class="drag-handle">⠿</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="intensity-section">
+    <div class="intensity-label">✦ Интенсивность грехов</div>
+    <div class="intensity-sub">Насколько сильно выражен каждый грех (1–10)</div>
+    <div id="sliders"></div>
+  </div>
+
+  <div class="motto-section">
+    <div class="motto-label">✦ Девиз грешника</div>
+    <div class="motto-sub">Одна фраза, которая тебя описывает</div>
+    <textarea id="inp-motto" rows="3" maxlength="120" placeholder="Напр. «Если и гореть — то ярко»"></textarea>
+  </div>
+
+  <!-- ARCHETYPE RESULT -->
+  <div class="archetype-section" id="archetype-section" style="display:none">
+    <div class="arch-label">✦ Твой архетип</div>
+    <div class="arch-card" id="arch-card">
+      <div class="arch-symbol" id="arch-symbol"></div>
+      <div class="arch-name" id="arch-name"></div>
+      <div class="arch-desc" id="arch-desc"></div>
+      <div class="arch-attracts" id="arch-attracts"></div>
+    </div>
+  </div>
+
+  <div class="save-section">
+    <button class="btn-reveal" id="btn-reveal" onclick="revealArchetype()">
+      ✦ &nbsp; Узнать свой архетип
+    </button>
+    <div id="save-buttons" style="display:none">
+      <button class="btn-save" id="btn-save" onclick="saveCard()">
+        ↓ &nbsp; Сохранить анкету как изображение
+      </button>
+    </div>
+    <p class="screenshot-hint">
+      Если изображение не сохранилось — <a onclick="prepareScreenshot()">подготовить анкету для скриншота</a>
+    </p>
+  </div>
+</div>
+
+<!-- SCREENSHOT OVERLAY -->
+<div id="screenshot-overlay">
+  <div class="overlay-hint">📱 Сделай скриншот экрана<br><span style="font-size:11px;color:#4a3040">карточка оптимизирована под 2/3 экрана iPhone 17</span></div>
+  <div id="screenshot-card"></div>
+  <button class="overlay-close" onclick="closeScreenshot()">✕ &nbsp; Закрыть</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const sinData = {
+  pride:    { name: 'Гордыня',     emoji: '👑', lat: 'Superbia' },
+  greed:    { name: 'Жадность',    emoji: '💰', lat: 'Avaritia' },
+  lust:     { name: 'Похоть',      emoji: '🌹', lat: 'Luxuria' },
+  envy:     { name: 'Зависть',     emoji: '🐍', lat: 'Invidia' },
+  gluttony: { name: 'Чревоугодие', emoji: '🍷', lat: 'Gula' },
+  wrath:    { name: 'Гнев',        emoji: '🔥', lat: 'Ira' },
+  sloth:    { name: 'Уныние',      emoji: '🌙', lat: 'Acedia' },
+};
+const sliderVals = {};
+Object.keys(sinData).forEach(k => sliderVals[k] = 5);
+
+// ── DRAG & DROP ───────────────────────────────────────
+const list = document.getElementById('sin-list');
+let dragSrc = null;
+let touchItem = null, touchClone = null, touchStartY = 0, touchItemInitialTop = 0;
+
+function updateRanks() {
+  list.querySelectorAll('.sin-item').forEach((el, i) => {
+    el.querySelector('.sin-rank').textContent = i + 1;
+  });
+  rebuildSliders();
+}
+
+// Mouse drag
+list.addEventListener('dragstart', e => {
+  dragSrc = e.target.closest('.sin-item');
+  if (dragSrc) dragSrc.classList.add('dragging');
+});
+list.addEventListener('dragend', () => {
+  if (dragSrc) dragSrc.classList.remove('dragging');
+  list.querySelectorAll('.sin-item').forEach(el => el.classList.remove('drag-over'));
+  updateRanks();
+});
+list.addEventListener('dragover', e => {
+  e.preventDefault();
+  const target = e.target.closest('.sin-item');
+  if (!target || target === dragSrc) return;
+  list.querySelectorAll('.sin-item').forEach(el => el.classList.remove('drag-over'));
+  target.classList.add('drag-over');
+  const r = target.getBoundingClientRect();
+  list.insertBefore(dragSrc, e.clientY < r.top + r.height / 2 ? target : target.nextSibling);
+});
+
+// Touch drag
+list.addEventListener('touchstart', e => {
+  touchItem = e.target.closest('.sin-item');
+  if (!touchItem) return;
+  touchStartY = e.touches[0].clientY;
+  touchItemInitialTop = touchItem.getBoundingClientRect().top;
+  touchClone = touchItem.cloneNode(true);
+  Object.assign(touchClone.style, {
+    position: 'fixed', left: '20px', right: '20px', zIndex: '999',
+    opacity: '0.9', pointerEvents: 'none', background: '#2a2a2a',
+    border: '1px solid #F25623', borderRadius: '2px', margin: '0',
+    top: touchItemInitialTop + 'px', transition: 'none',
+  });
+  document.body.appendChild(touchClone);
+  touchItem.classList.add('dragging');
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+  if (!touchItem || !touchClone) return;
+  e.preventDefault();
+  const y = e.touches[0].clientY;
+  touchClone.style.top = (touchItemInitialTop + (y - touchStartY)) + 'px';
+  const el = document.elementFromPoint(e.touches[0].clientX, y);
+  const target = el && el.closest('.sin-item');
+  if (target && target !== touchItem) {
+    list.querySelectorAll('.sin-item').forEach(el => el.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+    const r = target.getBoundingClientRect();
+    list.insertBefore(touchItem, y < r.top + r.height / 2 ? target : target.nextSibling);
+  }
+}, { passive: false });
+
+document.addEventListener('touchend', () => {
+  if (!touchItem) return;
+  touchItem.classList.remove('dragging');
+  list.querySelectorAll('.sin-item').forEach(el => el.classList.remove('drag-over'));
+  if (touchClone) { touchClone.remove(); touchClone = null; }
+  touchItem = null;
+  updateRanks();
+});
+
+// ── SLIDERS ──────────────────────────────────────────
+function getOrder() {
+  return [...list.querySelectorAll('.sin-item')].map(el => el.dataset.id);
+}
+
+function rebuildSliders() {
+  const cont = document.getElementById('sliders');
+  const order = getOrder();
+  cont.innerHTML = '';
+  order.forEach(id => {
+    const row = document.createElement('div');
+    row.className = 'slider-row';
+    row.innerHTML = `
+      <span class="slider-sin-name">${sinData[id].emoji} ${sinData[id].name}</span>
+      <input type="range" min="1" max="10" value="${sliderVals[id]}" data-sid="${id}">
+      <span class="slider-val" id="sv-${id}">${sliderVals[id]}</span>
+    `;
+    row.querySelector('input').addEventListener('input', function() {
+      sliderVals[this.dataset.sid] = +this.value;
+      document.getElementById('sv-' + this.dataset.sid).textContent = this.value;
+    });
+    cont.appendChild(row);
+  });
+}
+rebuildSliders();
+
+// ── HELPERS ──────────────────────────────────────────
+function getFormData() {
+  return {
+    name:  document.getElementById('inp-name').value.trim() || 'Аноним',
+    age:   document.getElementById('inp-age').value || '?',
+    city:  document.getElementById('inp-city').value.trim() || '—',
+    seek:  document.getElementById('inp-seek').value || '—',
+    motto: document.getElementById('inp-motto').value.trim(),
+    order: getOrder(),
+    archetype: currentArchetype || calcArchetype(),
+  };
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ── ARCHETYPE ENGINE ─────────────────────────────────
+const ARCHETYPES = [
+  {
+    id: 'demon',
+    name: 'Демон',
+    symbol: '🌑',
+    desc: 'Не скрывает ничего. Тёмная сторона принята и интегрирована. Пугает — но абсолютно честен. Самый редкий архетип.',
+    attracts: ['Ангел в падении', 'Аскет'],
+    match: (top, vals, total) => total >= 60 && Object.values(vals).every(v => v >= 7),
+  },
+  {
+    id: 'trickster',
+    name: 'Трикстер',
+    symbol: '🃏',
+    desc: 'Живёт на грани, нарушает правила ради удовольствия. Обаятелен и опасен одновременно. Знает твои слабости раньше тебя.',
+    attracts: ['Праведник', 'Ангел в падении'],
+    match: (top, vals, total) => top[0] === 'pride' && top.slice(0,3).includes('lust') && total >= 38,
+  },
+  {
+    id: 'heretic',
+    name: 'Еретик',
+    symbol: '💀',
+    desc: 'Отрицает всё — систему, мораль, авторитеты. Грехи носит как манифест. Разрушение как творческий акт.',
+    attracts: ['Проповедник', 'Мученик'],
+    match: (top, vals, total) => top[0] === 'pride' && top[1] === 'wrath' && total >= 45,
+  },
+  {
+    id: 'righteous',
+    name: 'Праведник',
+    symbol: '⚔️',
+    desc: 'Горит от несправедливости. Агрессия — это любовь, вывернутая наизнанку. Воюет за правду, но линию давно потерял.',
+    attracts: ['Миротворец', 'Грешник'],
+    match: (top, vals, total) => top[0] === 'wrath' && total >= 38,
+  },
+  {
+    id: 'tempter',
+    name: 'Искуситель',
+    symbol: '🐍',
+    desc: 'Видит цену всего и ценность ничего. Умеет предложить именно то, что ты хотел, но боялся попросить. Сделка всегда в его пользу.',
+    attracts: ['Ангел в падении', 'Мученик'],
+    match: (top, vals, total) => top[0] === 'greed' && top[1] === 'envy',
+  },
+  {
+    id: 'preacher',
+    name: 'Проповедник',
+    symbol: '📖',
+    desc: 'Знает как правильно — и не стесняется об этом говорить. Грешит сам, но судит других. Лицемерие как высокое искусство.',
+    attracts: ['Грешник', 'Еретик'],
+    match: (top, vals, total) => top[0] === 'pride' && top.slice(0,3).includes('envy') && total >= 26 && total <= 45,
+  },
+  {
+    id: 'sinner',
+    name: 'Грешник',
+    symbol: '🔥',
+    desc: 'Живёт здесь и сейчас. Тело важнее духа, момент важнее последствий. Не раскаивается — наслаждается каждым мгновением.',
+    attracts: ['Проповедник', 'Аскет'],
+    match: (top, vals, total) => (top[0] === 'lust' || top[1] === 'lust') && top.slice(0,3).includes('gluttony') && total >= 40,
+  },
+  {
+    id: 'martyr',
+    name: 'Мученик',
+    symbol: '🕯️',
+    desc: 'Страдает красиво. Чужой успех — личная трагедия. Боль как идентичность. Ищет того кто спасёт — или разделит страдание.',
+    attracts: ['Искуситель', 'Праведник'],
+    match: (top, vals, total) => top[0] === 'envy' && top.slice(0,3).includes('sloth'),
+  },
+  {
+    id: 'angel',
+    name: 'Ангел в падении',
+    symbol: '👼',
+    desc: 'Слишком чист для этого мира — или слишком устал от него. Грехи есть, но они тихие и красивые. Страдает молча и с достоинством.',
+    attracts: ['Демон', 'Трикстер'],
+    match: (top, vals, total) => top[0] === 'sloth' && total <= 28,
+  },
+  {
+    id: 'ascetic',
+    name: 'Аскет',
+    symbol: '👁️',
+    desc: 'Контроль — это его грех. Отказ от удовольствий стал источником гордости. Самый дисциплинированный человек в комнате — и самый одинокий.',
+    attracts: ['Грешник', 'Демон'],
+    match: (top, vals, total) => top.indexOf('lust') >= 4 && top.indexOf('gluttony') >= 4 && total < 25,
+  },
+  {
+    id: 'peacemaker',
+    name: 'Миротворец',
+    symbol: '🕊️',
+    desc: 'Избегает конфликтов любой ценой. Грехи мягкие — чай, диван, тишина. Тихое счастье как форма пассивного сопротивления миру.',
+    attracts: ['Праведник', 'Искуситель'],
+    match: (top, vals, total) => top.slice(0,3).includes('sloth') && top.slice(0,3).includes('gluttony') && top.indexOf('wrath') >= 4,
+  },
+  {
+    id: 'chaos',
+    name: 'Хаот',
+    symbol: '🌀',
+    desc: 'Непредсказуем даже для себя. Сегодня Миротворец, завтра Еретик. Система архетипов на нём ломается — и он этим доволен.',
+    attracts: ['всех и никого'],
+    match: (top, vals, total) => {
+      const v = Object.values(vals);
+      const spread = Math.max(...v) - Math.min(...v);
+      return spread <= 2;
+    },
+  },
+];
+
+let currentArchetype = null;
+
+function calcArchetype() {
+  const order = getOrder();
+  const total = Object.values(sliderVals).reduce((a, b) => a + b, 0);
+  for (const arch of ARCHETYPES) {
+    if (arch.match(order, sliderVals, total)) return arch;
+  }
+  // Fallback — по доминирующему греху
+  const fallbacks = {
+    pride: ARCHETYPES.find(a => a.id === 'preacher'),
+    greed: ARCHETYPES.find(a => a.id === 'tempter'),
+    lust:  ARCHETYPES.find(a => a.id === 'sinner'),
+    envy:  ARCHETYPES.find(a => a.id === 'martyr'),
+    gluttony: ARCHETYPES.find(a => a.id === 'peacemaker'),
+    wrath: ARCHETYPES.find(a => a.id === 'righteous'),
+    sloth: ARCHETYPES.find(a => a.id === 'angel'),
+  };
+  return fallbacks[order[0]] || ARCHETYPES[ARCHETYPES.length - 1];
+}
+
+function revealArchetype() {
+  currentArchetype = calcArchetype();
+  const sec = document.getElementById('archetype-section');
+  const card = document.getElementById('arch-card');
+
+  document.getElementById('arch-symbol').textContent = currentArchetype.symbol;
+  document.getElementById('arch-name').textContent = currentArchetype.name;
+  document.getElementById('arch-desc').textContent = currentArchetype.desc;
+  document.getElementById('arch-attracts').innerHTML =
+    `Притягивает: <span>${currentArchetype.attracts.join(', ')}</span>`;
+
+  sec.style.display = 'block';
+  // Re-trigger animation
+  card.style.animation = 'none';
+  card.offsetHeight; // reflow
+  card.style.animation = '';
+
+  // Show save button
+  document.getElementById('save-buttons').style.display = 'block';
+  document.getElementById('btn-reveal').textContent = '↺  Пересчитать архетип';
+
+  sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ── CANVAS DRAW & SAVE ───────────────────────────────
+// Draws card on Canvas directly — no html2canvas dependency, works in all browsers
+async function saveCard() {
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true;
+  btn.textContent = '⏳  Рисуем карточку...';
+
+  try {
+    await document.fonts.ready;
+  } catch(e) {}
+
+  const data = getFormData();
+  const W = 800, H = 1280;
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // BG
+  ctx.fillStyle = '#171717';
+  ctx.fillRect(0, 0, W, H);
+
+  // Glow gradients
+  const g1 = ctx.createRadialGradient(W*0.25, H*0.12, 0, W*0.25, H*0.12, W*0.65);
+  g1.addColorStop(0, 'rgba(242,86,35,0.14)');
+  g1.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g1; ctx.fillRect(0, 0, W, H);
+
+  const g2 = ctx.createRadialGradient(W*0.8, H*0.9, 0, W*0.8, H*0.9, W*0.55);
+  g2.addColorStop(0, 'rgba(242,86,35,0.07)');
+  g2.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
+
+  // Border
+  ctx.strokeStyle = '#4D4D4D';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(18, 18, W-36, H-36);
+
+  // Corner ornaments
+  const orn = (x, y, sx, sy) => {
+    ctx.strokeStyle = "#F25623"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, y+sy*20); ctx.lineTo(x, y); ctx.lineTo(x+sx*20, y); ctx.stroke();
+  };
+  orn(24,24,1,1); orn(W-24,24,-1,1); orn(24,H-24,1,-1); orn(W-24,H-24,-1,-1);
+
+  let y = 72;
+
+  // Logo
+  ctx.textAlign = 'center';
+  ctx.letterSpacing = '14px';
+  ctx.font = 'bold 88px "Playfair Display", serif';
+  ctx.fillStyle = '#F25623';
+  ctx.fillText('SINS', W/2, y + 64);
+  y += 100;
+
+  // Tagline
+  ctx.font = 'italic 22px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#888888';
+  ctx.letterSpacing = '2px';
+  ctx.fillText('Грешить веселее вместе', W/2, y);
+  y += 38;
+
+  // Divider
+  ctx.strokeStyle = '#4D4D4D'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(70, y); ctx.lineTo(W-70, y); ctx.stroke();
+  ctx.font = '20px serif'; ctx.fillStyle = '#F25623'; ctx.letterSpacing = '0px';
+  ctx.fillText('✦', W/2, y + 10);
+  y += 40;
+
+  // Name
+  ctx.font = 'bold 46px "Playfair Display", serif';
+  ctx.fillStyle = '#DEDEDE'; ctx.letterSpacing = '1px';
+  ctx.fillText(data.name, W/2, y);
+  y += 36;
+
+  // Meta
+  ctx.font = 'italic 21px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#888888'; ctx.letterSpacing = '0.5px';
+  ctx.fillText(`${data.age} лет · ${data.city} · Ищет: ${data.seek}`, W/2, y);
+  y += 42;
+
+  // Section heading
+  ctx.textAlign = 'left';
+  ctx.font = '600 13px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#F25623'; ctx.letterSpacing = '4px';
+  ctx.fillText('✦  МОЙ СМЕРТНЫЙ ТОП', 64, y);
+  y += 22;
+
+  // Sin rows
+  const accentBar = ['#F25623', '#c04018', '#8a2e10'];
+  const rowH = 74;
+
+  data.order.forEach((id, i) => {
+    const s = sinData[id];
+    const val = sliderVals[id];
+    const rx = 64, rw = W - 128;
+
+    // Row bg
+    ctx.fillStyle = '#1f1f1f';
+    ctx.fillRect(rx, y, rw, rowH - 8);
+
+    // Left bar
+    ctx.fillStyle = i < 3 ? accentBar[i] : '#4D4D4D';
+    ctx.fillRect(rx, y, 4, rowH - 8);
+
+    // Rank
+    ctx.textAlign = 'left';
+    ctx.font = `bold ${i === 0 ? 36 : 30}px "Playfair Display", serif`;
+    ctx.fillStyle = '#F25623'; ctx.letterSpacing = '0px';
+    ctx.fillText(i + 1, rx + 18, y + (rowH - 8)/2 + 11);
+
+    // Emoji
+    ctx.font = '30px serif';
+    ctx.fillText(s.emoji, rx + 62, y + (rowH - 8)/2 + 10);
+
+    // Sin name
+    ctx.font = 'bold 23px "Playfair Display", serif';
+    ctx.fillStyle = '#DEDEDE';
+    ctx.fillText(s.name, rx + 106, y + (rowH - 8)/2 + 3);
+
+    // Latin
+    ctx.font = 'italic 15px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText(s.lat, rx + 106, y + (rowH - 8)/2 + 20);
+
+    // Intensity bar track
+    const bx = rx + rw - 126, bw = 84, by = y + (rowH - 8)/2 - 3;
+    ctx.fillStyle = "#2a2a2a";
+    ctx.fillRect(bx, by, bw, 6);
+
+    // Fill
+    ctx.fillStyle = '#F25623';
+    ctx.fillRect(bx, by, bw * val / 10, 6);
+
+    // Number
+    ctx.textAlign = 'right';
+    ctx.font = 'bold 19px "Playfair Display", serif';
+    ctx.fillStyle = '#F25623';
+    ctx.fillText(val, rx + rw - 14, y + (rowH - 8)/2 + 7);
+
+    ctx.textAlign = 'left';
+    y += rowH;
+  });
+
+  y += 12;
+
+  // Motto box
+  if (data.motto) {
+    ctx.strokeStyle = '#4D4D4D'; ctx.lineWidth = 1;
+    ctx.strokeRect(64, y, W-128, 78);
+    ctx.font = 'italic 20px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#888888'; ctx.textAlign = 'center'; ctx.letterSpacing = '0.5px';
+
+    const maxW = W - 180;
+    const words = `«${data.motto}»`.split(' ');
+    let line = '', lines = [];
+    words.forEach(w => {
+      const test = line ? line + ' ' + w : w;
+      if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
+      else line = test;
+    });
+    if (line) lines.push(line);
+    const lh = 26;
+    const sy2 = y + 39 - ((lines.length - 1) * lh / 2);
+    lines.forEach((l, li) => ctx.fillText(l, W/2, sy2 + li * lh));
+    y += 92;
+  }
+
+  // Archetype block
+  const arch = data.archetype;
+  if (arch) {
+    // Section label
+    ctx.textAlign = 'left';
+    ctx.font = '600 13px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#F25623'; ctx.letterSpacing = '4px';
+    ctx.fillText('✦  АРХЕТИП', 64, y);
+    y += 20;
+
+    // Arch card bg
+    const archH = 140;
+    ctx.fillStyle = '#1f1f1f';
+    ctx.fillRect(64, y, W-128, archH);
+    ctx.strokeStyle = '#F25623'; ctx.lineWidth = 2;
+    ctx.strokeRect(64, y, 4, archH); // left bar
+
+    // Glow inside
+    const ag = ctx.createRadialGradient(W/2, y + archH/2, 0, W/2, y + archH/2, W*0.4);
+    ag.addColorStop(0, 'rgba(242,86,35,0.1)');
+    ag.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = ag;
+    ctx.fillRect(64, y, W-128, archH);
+
+    // Symbol
+    ctx.font = '52px serif'; ctx.letterSpacing = '0px';
+    ctx.textAlign = 'center';
+    ctx.fillText(arch.symbol, W/2 - 180, y + archH/2 + 18);
+
+    // Name
+    ctx.font = 'bold 32px "Playfair Display", serif';
+    ctx.fillStyle = '#F25623'; ctx.letterSpacing = '2px';
+    ctx.textAlign = 'left';
+    ctx.fillText(arch.name.toUpperCase(), W/2 - 110, y + 44);
+
+    // Desc (wrap)
+    ctx.font = 'italic 17px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#DEDEDE'; ctx.letterSpacing = '0px';
+    const dWords = arch.desc.split(' ');
+    let dLine = '', dLines = [];
+    const dMaxW = W - 128 - (W/2 - 110) - 64 + 64;
+    dWords.forEach(w => {
+      const test = dLine ? dLine + ' ' + w : w;
+      if (ctx.measureText(test).width > dMaxW * 0.9 && dLine) { dLines.push(dLine); dLine = w; }
+      else dLine = test;
+    });
+    if (dLine) dLines.push(dLine);
+    dLines.slice(0, 3).forEach((l, li) => ctx.fillText(l, W/2 - 110, y + 72 + li * 22));
+
+    // Attracts
+    ctx.font = '12px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#888'; ctx.letterSpacing = '1px';
+    ctx.fillText('Притягивает: ' + arch.attracts.join(', '), W/2 - 110, y + archH - 18);
+
+    y += archH + 20;
+  }
+
+  // Footer
+  ctx.font = '14px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#4D4D4D';
+  ctx.textAlign = 'center'; ctx.letterSpacing = '3px';
+  ctx.fillText('SINS.APP · ' + new Date().getFullYear(), W/2, H - 34);
+
+  // Download
+  let saved = false;
+  try {
+    await new Promise((resolve, reject) => {
+      canvas.toBlob(blob => {
+        if (!blob) { reject(new Error('no blob')); return; }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.download = `sins-${data.name.toLowerCase().replace(/\s+/g, '-')}.png`;
+        a.href = url;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        saved = true;
+        resolve();
+      }, 'image/png');
+    });
+  } catch(e) {
+    // blob failed, try dataURL
+    try {
+      const a = document.createElement('a');
+      a.download = `sins-${data.name.toLowerCase().replace(/\s+/g,'-')}.png`;
+      a.href = canvas.toDataURL('image/png');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      saved = true;
+    } catch(e2) {}
+  }
+
+  if (saved) {
+    showToast('✦ Анкета сохранена!');
+  } else {
+    showToast('⚠ Не удалось сохранить. Используй скриншот ↓');
+  }
+
+  btn.disabled = false;
+  btn.textContent = '✦   Сохранить анкету как изображение';
+}
+
+// ── SCREENSHOT MODE ───────────────────────────────────
+function prepareScreenshot() {
+  const data = getFormData();
+  const card = document.getElementById('screenshot-card');
+
+  const rows = data.order.map((id, i) => {
+    const s = sinData[id];
+    const v = sliderVals[id];
+    const cls = i === 0 ? 'r1' : i === 1 ? 'r2' : i === 2 ? 'r3' : '';
+    return `
+      <div class="sc-sin-row ${cls}">
+        <span class="sc-rank">${i+1}</span>
+        <span class="sc-emoji">${s.emoji}</span>
+        <span class="sc-sname">${s.name}</span>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:${v*10}%"></div></div>
+        <span class="sc-bar-num">${v}</span>
+      </div>`;
+  }).join('');
+
+  const motto = data.motto
+    ? `<div class="sc-motto">«${data.motto}»</div>` : '';
+
+  const archBlock = data.archetype ? `
+    <div class="sc-arch">
+      <span class="sc-arch-sym">${data.archetype.symbol}</span>
+      <div class="sc-arch-info">
+        <div class="sc-arch-label">✦ архетип</div>
+        <div class="sc-arch-name">${data.archetype.name.toUpperCase()}</div>
+      </div>
+    </div>` : '';
+
+  card.innerHTML = `
+    <div class="sc-logo">SINS</div>
+    <div class="sc-tagline">Грешить веселее вместе</div>
+    <div class="sc-divider"></div>
+    <div class="sc-name">${data.name}</div>
+    <div class="sc-meta">${data.age} лет · ${data.city} · Ищет: ${data.seek}</div>
+    <div class="sc-section-title">✦ Мой смертный топ</div>
+    ${rows}
+    ${motto}
+    ${archBlock}
+    <div class="sc-footer">sins.app · ${new Date().getFullYear()}</div>
+  `;
+
+  document.getElementById('screenshot-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeScreenshot() {
+  document.getElementById('screenshot-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('screenshot-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeScreenshot();
+});
+</script>
+</body>
+</html>

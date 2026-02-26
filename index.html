@@ -362,6 +362,147 @@
   .sc-arch-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #888; margin-bottom: 2px; }
   .sc-arch-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: #F25623; }
 
+  /* ── FEATURE 4: ПОКАЯНИЕ ── */
+  .penance-section { padding: 36px 20px 0; }
+  .penance-label { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .penance-sub { font-size: 13px; font-style: italic; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+
+  .penance-card {
+    border: 1px solid var(--border); background: var(--card);
+    padding: 24px 20px; border-radius: 2px; position: relative; overflow: hidden;
+  }
+  .penance-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 110%, rgba(242,86,35,0.08) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  /* Sin selection */
+  .penance-sin-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 0; }
+  .penance-sin-opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; border: 1px solid var(--border); border-radius: 2px;
+    cursor: pointer; transition: all 0.18s; background: var(--surface);
+  }
+  .penance-sin-opt:hover { border-color: var(--accent); }
+  .penance-sin-opt.selected { border-color: var(--accent); background: rgba(242,86,35,0.07); }
+  .p-emoji { font-size: 22px; }
+  .p-name { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--text); flex: 1; }
+  .p-hint { font-size: 11px; font-style: italic; color: var(--muted); }
+  .p-dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; transition: all 0.18s; }
+  .penance-sin-opt.selected .p-dot { border-color: var(--accent); background: var(--accent); }
+
+  /* Text field + button — appear after selection */
+  .penance-confess {
+    display: none; margin-top: 18px;
+    animation: fadeUp 0.3s ease forwards;
+  }
+  .penance-confess.visible { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .penance-confess-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px; display: block;
+  }
+  .penance-confess-sin-name {
+    font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .penance-confess-prompt {
+    font-size: 13px; font-style: italic; color: var(--muted);
+    margin-bottom: 14px; line-height: 1.5;
+  }
+  .penance-textarea {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Cormorant Garamond', serif;
+    font-size: 15px; font-style: italic; padding: 14px; border-radius: 2px;
+    outline: none; resize: none; transition: border-color 0.2s; line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .penance-textarea:focus { border-color: var(--accent); }
+  .penance-textarea::placeholder { color: var(--muted); }
+
+  .btn-penance {
+    width: 100%; padding: 16px;
+    background: var(--accent); color: #fff;
+    font-family: 'Playfair Display', serif; font-size: 13px; letter-spacing: 0.2em;
+    text-transform: uppercase; border: none; border-radius: 2px; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-penance:hover { background: #c04018; }
+  .btn-penance:active { transform: scale(0.98); }
+  .btn-penance:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* Penance result overlay */
+  #penance-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.93); z-index: 950;
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 20px; backdrop-filter: blur(6px);
+  }
+  #penance-overlay.active { display: flex; }
+  .penance-overlay-hint {
+    font-size: 13px; font-style: italic; color: var(--gold);
+    margin-bottom: 18px; text-align: center; letter-spacing: 0.04em;
+  }
+  #penance-card {
+    width: min(320px, 90vw);
+    background: #171717; border: 1px solid #4D4D4D; border-radius: 6px;
+    padding: 32px 24px 28px; position: relative; overflow: hidden;
+    max-height: 80vh; overflow-y: auto;
+  }
+  #penance-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(242,86,35,0.14) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .pc-logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #F25623; letter-spacing: 0.22em; text-align: center; }
+  .pc-rule { height: 1px; background: #4D4D4D; margin: 14px 0; position: relative; }
+  .pc-rule::after { content: '✦'; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); background: #171717; padding: 0 8px; font-size: 10px; color: #F25623; }
+  .pc-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; text-align: center; color: #DEDEDE; margin-bottom: 4px; }
+  .pc-arch { text-align: center; font-size: 12px; font-style: italic; color: #888; margin-bottom: 18px; }
+  .pc-section-title { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: #F25623; margin-bottom: 10px; }
+  .pc-sin-badge {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 14px; background: #1f1f1f;
+    border-left: 3px solid #F25623; margin-bottom: 14px;
+  }
+  .pc-sin-badge-emoji { font-size: 26px; }
+  .pc-sin-badge-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: #F25623; }
+  .pc-confess-box {
+    border: 1px solid #4D4D4D; padding: 14px 14px;
+    font-size: 14px; font-style: italic; color: #DEDEDE; line-height: 1.7;
+    margin-bottom: 14px; white-space: pre-wrap;
+  }
+  .pc-task-box {
+    background: rgba(242,86,35,0.08); border: 1px solid rgba(242,86,35,0.3);
+    padding: 12px 14px; margin-bottom: 18px;
+  }
+  .pc-task-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #F25623; margin-bottom: 4px; }
+  .pc-task-text { font-size: 13px; font-style: italic; color: #DEDEDE; line-height: 1.5; }
+  .pc-footer { text-align: center; font-size: 9px; letter-spacing: 0.18em; color: #4D4D4D; text-transform: uppercase; }
+
+  .penance-overlay-close {
+    margin-top: 16px; background: none; border: 1px solid #4D4D4D; color: #888;
+    font-family: 'Cormorant Garamond', serif; font-size: 13px; letter-spacing: 0.1em;
+    padding: 10px 28px; cursor: pointer; border-radius: 2px; transition: all 0.2s;
+  }
+  .penance-overlay-close:hover { border-color: #888; color: #DEDEDE; }
+
+  /* Save penance btn inside overlay */
+  .btn-save-penance {
+    margin-top: 14px; width: min(320px, 90vw); padding: 14px;
+    background: var(--accent); color: #fff;
+    font-family: 'Playfair Display', serif; font-size: 12px; letter-spacing: 0.18em;
+    text-transform: uppercase; border: none; border-radius: 2px; cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-save-penance:hover { background: #c04018; }
+  .btn-save-penance:active { transform: scale(0.98); }
+
   @media (max-width: 360px) {
     .logo { font-size: 48px; }
     .sin-name { font-size: 15px; }
@@ -463,6 +604,28 @@
     <textarea id="inp-motto" rows="3" maxlength="120" placeholder="Напр. «Если и гореть — то ярко»"></textarea>
   </div>
 
+  <!-- FEATURE 4: ПОКАЯНИЕ -->
+  <div class="penance-section">
+    <div class="penance-label">✦ Покаяние</div>
+    <div class="penance-sub">Выбери грех — и признайся в нём</div>
+    <div class="penance-card">
+
+      <div class="penance-sin-grid" id="penance-sins"></div>
+
+      <div class="penance-confess" id="penance-confess">
+        <span class="penance-confess-label">✦ Исповедь</span>
+        <div class="penance-confess-sin-name" id="penance-confess-sinname"></div>
+        <div class="penance-confess-prompt" id="penance-confess-prompt"></div>
+        <textarea class="penance-textarea" id="penance-text" rows="4"
+          placeholder="Напишите здесь своё признание..."></textarea>
+        <button class="btn-penance" id="btn-penance" onclick="showPenanceCard()">
+          🕯️ &nbsp; Покаяться
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ARCHETYPE RESULT -->
   <div class="archetype-section" id="archetype-section" style="display:none">
     <div class="arch-label">✦ Твой архетип</div>
@@ -487,6 +650,14 @@
       Если изображение не сохранилось — <a onclick="prepareScreenshot()">подготовить анкету для скриншота</a>
     </p>
   </div>
+</div>
+
+<!-- PENANCE OVERLAY -->
+<div id="penance-overlay">
+  <div class="penance-overlay-hint">🕯️ Твоё покаяние</div>
+  <div id="penance-card"></div>
+  <button class="btn-save-penance" onclick="savePenanceCard()">↓ &nbsp; Сохранить как изображение</button>
+  <button class="penance-overlay-close" onclick="closePenanceOverlay()">✕ &nbsp; Закрыть</button>
 </div>
 
 <!-- SCREENSHOT OVERLAY -->
@@ -610,6 +781,8 @@ function rebuildSliders() {
   });
 }
 rebuildSliders();
+// Build penance sins list on load
+setTimeout(buildPenanceSins, 0);
 
 // ── HELPERS ──────────────────────────────────────────
 function getFormData() {
@@ -629,6 +802,253 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ── FEATURE 4: ПОКАЯНИЕ ──────────────────────────────
+const penanceData = {
+  pride:    { prompt: 'В чём твоя гордыня причинила вред тебе или другим?',    task: 'Позволь другому быть правым — без спора' },
+  greed:    { prompt: 'Что ты удерживал, хотя мог бы отдать?',                task: 'Отдай что-то ценное без ожидания ответа' },
+  lust:     { prompt: 'Когда желание завело тебя не туда?',                   task: 'Один день — цени человека за слова, не за внешность' },
+  envy:     { prompt: 'Чей успех причинял тебе боль — и почему?',             task: 'Искренне порадуйся за того кому завидуешь' },
+  gluttony: { prompt: 'Что ты потреблял сверх меры — и что это скрывало?',    task: 'Один простой ужин. Без излишеств' },
+  wrath:    { prompt: 'Кому ты причинил боль своим гневом?',                  task: 'Досчитай до десяти. Потом ответь' },
+  sloth:    { prompt: 'Что важное ты откладывал — и чего это стоило?',        task: 'Сделай одно важное дело — прямо сегодня' },
+};
+
+let penanceSin = null;
+
+function buildPenanceSins() {
+  const cont = document.getElementById('penance-sins');
+  cont.innerHTML = '';
+  getOrder().forEach(id => {
+    const s = sinData[id];
+    const opt = document.createElement('div');
+    opt.className = 'penance-sin-opt';
+    opt.dataset.id = id;
+    opt.innerHTML = `
+      <span class="p-emoji">${s.emoji}</span>
+      <span class="p-name">${s.name}</span>
+      <span class="p-hint">${s.lat}</span>
+      <span class="p-dot"></span>`;
+    opt.onclick = () => selectPenanceSin(id);
+    cont.appendChild(opt);
+  });
+}
+
+function selectPenanceSin(id) {
+  document.querySelectorAll('.penance-sin-opt').forEach(o =>
+    o.classList.toggle('selected', o.dataset.id === id));
+  penanceSin = id;
+
+  const s = sinData[id];
+  const d = penanceData[id];
+  document.getElementById('penance-confess-sinname').textContent = s.emoji + '  ' + s.name;
+  document.getElementById('penance-confess-prompt').textContent = d.prompt;
+  document.getElementById('penance-text').value = '';
+
+  const confess = document.getElementById('penance-confess');
+  confess.classList.add('visible');
+  confess.style.animation = 'none';
+  confess.offsetHeight;
+  confess.style.animation = '';
+  confess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function showPenanceCard() {
+  if (!penanceSin) return;
+  const name = document.getElementById('inp-name').value.trim() || 'Аноним';
+  const archetype = currentArchetype || calcArchetype();
+  const s = sinData[penanceSin];
+  const d = penanceData[penanceSin];
+  const text = document.getElementById('penance-text').value.trim() || '…';
+
+  const card = document.getElementById('penance-card');
+  card.innerHTML = `
+    <div class="pc-logo">SINS</div>
+    <div class="pc-rule"></div>
+    <div class="pc-name">${name}</div>
+    <div class="pc-arch">${archetype.symbol} ${archetype.name}</div>
+    <div class="pc-section-title">✦ покаяние</div>
+    <div class="pc-sin-badge">
+      <span class="pc-sin-badge-emoji">${s.emoji}</span>
+      <span class="pc-sin-badge-name">${s.name}</span>
+    </div>
+    <div class="pc-confess-box">${text}</div>
+    <div class="pc-task-box">
+      <div class="pc-task-label">обет</div>
+      <div class="pc-task-text">${d.task}</div>
+    </div>
+    <div class="pc-footer">sins.app · ${new Date().getFullYear()}</div>
+  `;
+
+  document.getElementById('penance-overlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePenanceOverlay() {
+  document.getElementById('penance-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('penance-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closePenanceOverlay();
+});
+
+async function savePenanceCard() {
+  if (!penanceSin) return;
+  await document.fonts.ready;
+
+  const name = document.getElementById('inp-name').value.trim() || 'Аноним';
+  const archetype = currentArchetype || calcArchetype();
+  const s = sinData[penanceSin];
+  const d = penanceData[penanceSin];
+  const text = document.getElementById('penance-text').value.trim() || '…';
+
+  const W = 800, H = 1000;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // BG
+  ctx.fillStyle = '#171717';
+  ctx.fillRect(0, 0, W, H);
+
+  // Glow
+  const g = ctx.createRadialGradient(W/2, H*0.1, 0, W/2, H*0.1, W*0.7);
+  g.addColorStop(0, 'rgba(242,86,35,0.13)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  const g2 = ctx.createRadialGradient(W/2, H, 0, W/2, H, W*0.5);
+  g2.addColorStop(0, 'rgba(242,86,35,0.06)');
+  g2.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
+
+  // Border
+  ctx.strokeStyle = '#4D4D4D'; ctx.lineWidth = 1.5;
+  ctx.strokeRect(18, 18, W-36, H-36);
+
+  // Corner marks
+  const corner = (x, y, sx, sy) => {
+    ctx.strokeStyle = '#F25623'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, y+sy*18); ctx.lineTo(x, y); ctx.lineTo(x+sx*18, y); ctx.stroke();
+  };
+  corner(24,24,1,1); corner(W-24,24,-1,1); corner(24,H-24,1,-1); corner(W-24,H-24,-1,-1);
+
+  let y = 72;
+
+  // Logo
+  ctx.textAlign = 'center'; ctx.letterSpacing = '12px';
+  ctx.font = 'bold 72px "Playfair Display", serif';
+  ctx.fillStyle = '#F25623';
+  ctx.fillText('SINS', W/2, y + 52);
+  y += 80;
+
+  // Divider
+  ctx.strokeStyle = '#4D4D4D'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(70, y); ctx.lineTo(W-70, y); ctx.stroke();
+  ctx.font = '16px serif'; ctx.fillStyle = '#F25623'; ctx.letterSpacing = '0px';
+  ctx.fillText('✦', W/2, y + 9);
+  y += 32;
+
+  // Name
+  ctx.font = 'bold 42px "Playfair Display", serif';
+  ctx.fillStyle = '#DEDEDE'; ctx.letterSpacing = '1px';
+  ctx.fillText(name, W/2, y);
+  y += 30;
+
+  // Archetype
+  ctx.font = 'italic 20px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#888'; ctx.letterSpacing = '1px';
+  ctx.fillText(`${archetype.symbol}  ${archetype.name}`, W/2, y);
+  y += 44;
+
+  // Section: покаяние
+  ctx.textAlign = 'left'; ctx.letterSpacing = '4px';
+  ctx.font = '600 12px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#F25623';
+  ctx.fillText('✦  ПОКАЯНИЕ', 64, y);
+  y += 22;
+
+  // Sin badge
+  const bh = 70;
+  ctx.fillStyle = '#1f1f1f'; ctx.fillRect(64, y, W-128, bh);
+  ctx.fillStyle = '#F25623'; ctx.fillRect(64, y, 4, bh);
+  ctx.font = '34px serif'; ctx.letterSpacing = '0px'; ctx.textAlign = 'left';
+  ctx.fillText(s.emoji, 88, y + 42);
+  ctx.font = 'bold 26px "Playfair Display", serif';
+  ctx.fillStyle = '#F25623';
+  ctx.fillText(s.name, 134, y + 30);
+  ctx.font = 'italic 16px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#888';
+  ctx.fillText(s.lat, 134, y + 52);
+  y += bh + 20;
+
+  // Confession text box
+  ctx.strokeStyle = '#4D4D4D'; ctx.lineWidth = 1;
+  const confLines = wrapText(ctx, text, W-168, 'italic 19px "Cormorant Garamond", serif');
+  const confH = Math.max(80, confLines.length * 30 + 40);
+  ctx.strokeRect(64, y, W-128, confH);
+  ctx.font = 'italic 19px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#DEDEDE'; ctx.letterSpacing = '0.3px';
+  confLines.forEach((l, i) => ctx.fillText(l, 84, y + 32 + i * 30));
+  y += confH + 22;
+
+  // Oath box
+  const oathH = 80;
+  ctx.fillStyle = 'rgba(242,86,35,0.07)'; ctx.fillRect(64, y, W-128, oathH);
+  ctx.strokeStyle = 'rgba(242,86,35,0.35)'; ctx.lineWidth = 1;
+  ctx.strokeRect(64, y, W-128, oathH);
+  ctx.font = '600 11px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#F25623'; ctx.letterSpacing = '3px';
+  ctx.fillText('ОБЕТ', 84, y + 22);
+  ctx.font = 'italic 17px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#DEDEDE'; ctx.letterSpacing = '0.3px';
+  const oathLines = wrapText(ctx, d.task, W-188, 'italic 17px "Cormorant Garamond", serif');
+  oathLines.forEach((l, i) => ctx.fillText(l, 84, y + 44 + i * 24));
+  y += oathH + 30;
+
+  // Footer
+  ctx.textAlign = 'center'; ctx.font = '13px "Cormorant Garamond", serif';
+  ctx.fillStyle = '#4D4D4D'; ctx.letterSpacing = '3px';
+  ctx.fillText('SINS.APP · ' + new Date().getFullYear(), W/2, H - 32);
+
+  // Download
+  try {
+    canvas.toBlob(blob => {
+      if (!blob) { fallbackSave(canvas, name); return; }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.download = `sins-pokayanie-${name.toLowerCase().replace(/\s+/g,'-')}.png`;
+      a.href = url;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      showToast('🕯️ Покаяние сохранено');
+    }, 'image/png');
+  } catch(e) { fallbackSave(canvas, name); }
+}
+
+function fallbackSave(canvas, name) {
+  try {
+    const a = document.createElement('a');
+    a.download = `sins-pokayanie-${(name||'').toLowerCase().replace(/\s+/g,'-')}.png`;
+    a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    showToast('🕯️ Покаяние сохранено');
+  } catch(e) { showToast('⚠ Не удалось сохранить — сделай скриншот'); }
+}
+
+function wrapText(ctx, text, maxW, font) {
+  ctx.font = font;
+  const words = text.split(' ');
+  let line = '', lines = [];
+  words.forEach(w => {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = w; }
+    else line = test;
+  });
+  if (line) lines.push(line);
+  return lines;
 }
 
 // ── ARCHETYPE ENGINE ─────────────────────────────────
